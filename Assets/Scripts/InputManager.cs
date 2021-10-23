@@ -9,14 +9,12 @@ public class InputManager : MonoBehaviour
     public Transform anchor;        // get the transform of the OculusGo Controller device
     public GameObject indicatorObj; // get the object to use to indicate the proposed teleportation spot
     public GameObject player;
-    public float PLAYER_EYE_HEIGHT = 1.0f;  // offset from ground assumed in the y direction
-    public float MAX_DISTANCE = 8f;         // max distance for teleportion (after testing can be converted to a constant
-    public float TARGET_OFFSET = 0.1f;      // distance to display teleport target object
-    //public ControllerGrabber leftGrabber;
-    //public ControllerGrabber rightGrabber;
-
     public static UnityAction onTriggerDown = null;
+    public float MAX_DISTANCE;
+    public ControllerGrabber leftGrabber;
+    public ControllerGrabber rightGrabber;
 
+     
     private void Awake()
     {
         InputManager.onTriggerDown += TriggerDown;
@@ -31,6 +29,7 @@ public class InputManager : MonoBehaviour
     void Start()
     {
         indicatorObj.SetActive(false);  // indicator is invisible unless the pointer intersects the ground
+
     }
 
     // Update is called once per frame
@@ -41,27 +40,27 @@ public class InputManager : MonoBehaviour
         RaycastHit hit;                                     // returns the hit variable to indicate what and where the ray 
                                                             // was intersected if at all
 
+        //if (Physics.Raycast(ray, out hit, MAX_DISTANCE))  // a maxdistance should be set so you can't teleport too far away
+
         if (Physics.Raycast(ray, out hit, MAX_DISTANCE))
         {
-            if (hit.collider.gameObject.tag == "GroundSurf")
+            if (hit.transform.gameObject.CompareTag("GroundSurf"))
             {
-
                 // valid object was hit
-                Vector3 newPosition = new Vector3(hit.point.x, hit.point.y + TARGET_OFFSET, hit.point.z);
+                Vector3 newPosition = new Vector3(hit.point.x, hit.point.y + 0.1f, hit.point.z); // WARNING: assumes target is just above ground 
                 indicatorObj.transform.position = newPosition;
                 if (!indicatorObj.activeSelf) indicatorObj.SetActive(true); // make sure it is visible
             }
             else
             {
-                // object hit is NOT a ground surface suitable for this kind of teleportation
-                if (indicatorObj.activeSelf) indicatorObj.SetActive(false); // if nothihng is hit make indicator invisible
+                // valid object was not hit
+                if (indicatorObj.activeSelf) indicatorObj.SetActive(false); // if nothihng is hit make it invisible
             }
-
         }
         else
         {
-            // nothing was hit
-            if (indicatorObj.activeSelf) indicatorObj.SetActive(false); // if nothihng is hit make indicator invisible
+            // valid object was not hit
+            if (indicatorObj.activeSelf) indicatorObj.SetActive(false); // if nothihng is hit make it invisible
         }
 
         // check for user input: primary trigger 
@@ -69,6 +68,30 @@ public class InputManager : MonoBehaviour
         {
             if (onTriggerDown != null)
                 onTriggerDown();
+        }
+
+        // secondary controller
+        // check for user input: secondary trigger down
+        if (OVRInput.GetDown(OVRInput.RawButton.LHandTrigger, OVRInput.Controller.Touch))
+        {
+            leftGrabber.userGrab = true;
+        }
+
+        // check for user input: secondary trigger up
+        if (OVRInput.GetUp(OVRInput.RawButton.LHandTrigger, OVRInput.Controller.Touch))
+        {
+            leftGrabber.userGrab = false;
+        }
+
+        if (OVRInput.GetDown(OVRInput.RawButton.RHandTrigger, OVRInput.Controller.Touch))
+        {
+            rightGrabber.userGrab = true;
+        }
+
+        // check for user input: secondary trigger up
+        if (OVRInput.GetUp(OVRInput.RawButton.RHandTrigger, OVRInput.Controller.Touch))
+        {
+            rightGrabber.userGrab = false;
         }
 
     }
@@ -82,19 +105,12 @@ public class InputManager : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, MAX_DISTANCE))
         {
-            if (hit.collider.gameObject.tag == "GroundSurf")
+            if (hit.transform.gameObject.CompareTag("GroundSurf"))
             {
-                float target_x, target_y, target_z;
-
-                target_x = hit.point.x;
-                target_z = hit.point.z;
-                target_y = hit.point.y + PLAYER_EYE_HEIGHT;
-
-                //transform the player to the hit position 
-                Vector3 newpos = new Vector3(target_x, target_y, target_z);
+                //transform the player to the hit position (X and Z plane only)
+                Vector3 newpos = new Vector3(hit.point.x, player.transform.position.y, hit.point.z); // WARNING: assumes only moving along the ground plane
                 player.transform.position = newpos;
             }
-
         }
     }
 

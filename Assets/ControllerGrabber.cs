@@ -49,7 +49,7 @@ public class ControllerGrabber : MonoBehaviour
     {
         if (userGrab && !_grabbingObject)
         {
-            if (other.gameObject.CompareTag("grabbable"))
+            if (other.gameObject.CompareTag("Grabbable"))
             {
                 _grabbingObject = true;
                 grabbedObject = other.gameObject;
