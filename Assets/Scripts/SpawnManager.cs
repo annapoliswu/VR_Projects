@@ -12,8 +12,7 @@ public class SpawnManager : MonoBehaviour
 
     public GameObject target;
     public List<GameObject> prefabs = new List<GameObject>();
-    private List<Bug> bugs = new List<Bug>();
-    private List<Bug> bugsToDelete = new List<Bug>();
+    private List<GameObject> bugs = new List<GameObject>();
 
     private float targetRadius = .5f;
 
@@ -40,32 +39,21 @@ public class SpawnManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        foreach(Bug bug in bugs) //update
+
+        foreach (GameObject bug in bugs) //update
         {
-            //if within target radius delete
-            float distance = Vector3.Distance(target.transform.position, bug.gameobj.transform.position);
-            if (distance < targetRadius)
+            if (bug != null)
             {
-                RemoveBug(bug);
+                //if within target radius delete
+                float distance = Vector3.Distance(target.transform.position, bug.transform.position);
+
+                bug.GetComponent<Bug>().Move();
             }
-
-            //float step = speed * Time.deltaTime;
-
-            //bug.gameobj.transform.position = Vector3.MoveTowards(bug.gameobj.transform.position, target.transform.position, step);
-            //bug.gameobj.transform.position = Vector3.MoveTowards(bug.gameobj.transform.position, bug.gameobj.transform.position + r, 20 * Time.deltaTime);
-            bug.Move();
         }
 
-        if (bugsToDelete != null)
-        {
-            foreach (Bug bug in bugsToDelete)
-            {
-                bugs.RemoveAt(bugs.IndexOf(bug));
-                StopCoroutine(bug.coroutine);
-                Destroy(bug.gameobj);
-            }
-            bugsToDelete.Clear();
-        }
+        bugs.RemoveAll(bug => bug == null);
+
+
     }
 
     private void SpawnObj()
@@ -76,23 +64,23 @@ public class SpawnManager : MonoBehaviour
         
 
         GameObject obj = GameObject.Instantiate(prefabs[0], this.transform.position , Quaternion.identity);
+        Bug bugData = obj.AddComponent<Bug>();
 
-        float speed = Random.Range(1.5f, 3f);
-        float height = 5;
-        int waitTime = Random.Range(1, 3);
-        Bug bugToAdd = new Bug(target, obj, speed, height, waitTime);
-        bugToAdd.coroutine = StartCoroutine(OscBug(bugToAdd));
 
-        bugs.Add(bugToAdd);
+        bugData.gameobj = obj;
+        bugData.speed = Random.Range(1.5f, 3f);
+        bugData.height = 5;
+        bugData.waitTime = Random.Range(1, 3);
+        //bugToAdd = new Bug(target, obj, speed, height, waitTime);
+        bugData.coroutine = StartCoroutine(OscBug(bugData));
+        bugData.target = target;
+
+        bugs.Add(obj);
 
     }
 
 
 
-    public void RemoveBug(Bug bug)
-    {
-        bugsToDelete.Add(bug);
-    }
 
 
 
@@ -114,68 +102,4 @@ public class SpawnManager : MonoBehaviour
     }
 
 
-}
-
-public class Bug{
-
-    public enum Direction { Up, Down, Left, Right };
-    public Direction direction;
-
-    public GameObject gameobj;
-    public GameObject target;
-    public float speed;
-    public float height;
-    public int waitTime;
-    public Coroutine coroutine;
-
-    private Vector3 upPosn;
-    private Vector3 downPosn;
-
-    public Bug(GameObject t, GameObject g, float s, float h, int wt)
-    {
-        target = t;
-        gameobj = g;
-        speed = s;
-        height = h;
-        waitTime = wt;
-        direction = Direction.Up;
-
-        upPosn = target.transform.position;
-        upPosn.y += height;
-
-        downPosn = target.transform.position;
-        downPosn.y -= height;
-
-    }
-
-    public void Move() //called on every update
-    {
-
-        float step = speed * Time.deltaTime;
-        Vector3 newTargetPosn = new Vector3();
-
-
-        if (Vector3.Distance(target.transform.position, gameobj.transform.position) > 2) //if within target go straight to target
-        {
-            if(direction == Direction.Up)
-            {
-                newTargetPosn = upPosn;
-            }else if(direction == Direction.Down)
-            {
-                newTargetPosn = downPosn;
-            }
-        }
-        else
-        {
-            newTargetPosn = target.transform.position;
-        }
-
-        this.gameobj.transform.position = Vector3.MoveTowards(this.gameobj.transform.position, newTargetPosn, step);
-
-
-    }
-
-
-
-    
 }
