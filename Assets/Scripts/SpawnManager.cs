@@ -12,7 +12,10 @@ public class SpawnManager : MonoBehaviour
 
     public GameObject target;
     public List<GameObject> prefabs = new List<GameObject>();
-    private List<GameObject> objList = new List<GameObject>();
+    private List<Bug> bugs = new List<Bug>();
+    private List<Bug> bugsToDelete = new List<Bug>();
+
+    private float targetRadius = .5f;
 
     private void Awake()
     {
@@ -37,12 +40,31 @@ public class SpawnManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        foreach(GameObject bug in objList)
+        foreach(Bug bug in bugs) //update
         {
-            float step = speed * Time.deltaTime;
-            
-            bug.transform.position = Vector3.MoveTowards(bug.transform.position, target.transform.position, step);
-            //bug.transform.position = Vector3.MoveTowards(bug.transform.position, bug.transform.position + r, 20 * Time.deltaTime);
+            //if within target radius delete
+            float distance = Vector3.Distance(target.transform.position, bug.gameobj.transform.position);
+            if (distance < targetRadius)
+            {
+                RemoveBug(bug);
+            }
+
+            //float step = speed * Time.deltaTime;
+
+            //bug.gameobj.transform.position = Vector3.MoveTowards(bug.gameobj.transform.position, target.transform.position, step);
+            //bug.gameobj.transform.position = Vector3.MoveTowards(bug.gameobj.transform.position, bug.gameobj.transform.position + r, 20 * Time.deltaTime);
+            bug.Move();
+        }
+
+        if (bugsToDelete != null)
+        {
+            foreach (Bug bug in bugsToDelete)
+            {
+                bugs.RemoveAt(bugs.IndexOf(bug));
+                StopCoroutine(bug.coroutine);
+                Destroy(bug.gameobj);
+            }
+            bugsToDelete.Clear();
         }
     }
 
@@ -51,50 +73,109 @@ public class SpawnManager : MonoBehaviour
         Vector3 targetPosition = target.transform.position;
         Vector3 startPosition = new Vector3(0,0,0);
         Vector2 rand2D = Random.insideUnitCircle * spawnRadius;
-
-        startPosition.x = rand2D.x;
-        startPosition.z = rand2D.y;
-        startPosition.y = 5;
-
         
 
-        GameObject objToAdd = GameObject.Instantiate(prefabs[0], this.transform.position , Quaternion.identity);
-        
+        GameObject obj = GameObject.Instantiate(prefabs[0], this.transform.position , Quaternion.identity);
 
-        objList.Add(objToAdd);
+        float speed = Random.Range(1.5f, 3f);
+        float height = 5;
+        int waitTime = Random.Range(1, 3);
+        Bug bugToAdd = new Bug(target, obj, speed, height, waitTime);
+        bugToAdd.coroutine = StartCoroutine(OscBug(bugToAdd));
+
+        bugs.Add(bugToAdd);
 
     }
 
-    private IEnumerator DropObj(GameObject obj, float duration)
+
+
+    public void RemoveBug(Bug bug)
     {
-        yield return new WaitForSeconds(duration);
-        obj.GetComponent<Rigidbody>().useGravity = true;
+        bugsToDelete.Add(bug);
     }
 
-    private void DespawnObj()
-    {   
-        //can play a despawn anim here if want
-        GameObject objToDestroy = objList[0];
-        objList.RemoveAt(0);
-        Destroy(objToDestroy);
-    }
 
-    private void DespawnObj(int listPosn)
+
+    IEnumerator OscBug(Bug bug)
     {
-        GameObject objToDestroy = objList[listPosn];
-        objList.RemoveAt(listPosn);
-        Destroy(objToDestroy);
-    }
-
-    /**
-    private void bugDodge()
-    {
-        foreach (GameObject bug in objList)
+        while (true && bug.gameobj != null)
         {
-            Vector3 r = Random.insideUnitCircle * 10;
-            bug.transform.position = Vector3.MoveTowards(bug.transform.position, bug.transform.position + r, 20 * Time.deltaTime);
+            yield return new WaitForSeconds(bug.waitTime);
+            print("Waited for: " + bug.waitTime);
+            if (bug.direction == Bug.Direction.Up)
+            {
+                bug.direction = Bug.Direction.Down;
+            }
+            else if (bug.direction == Bug.Direction.Down)
+            {
+                bug.direction = Bug.Direction.Up;
+            }
         }
     }
-    **/
 
+
+}
+
+public class Bug{
+
+    public enum Direction { Up, Down, Left, Right };
+    public Direction direction;
+
+    public GameObject gameobj;
+    public GameObject target;
+    public float speed;
+    public float height;
+    public int waitTime;
+    public Coroutine coroutine;
+
+    private Vector3 upPosn;
+    private Vector3 downPosn;
+
+    public Bug(GameObject t, GameObject g, float s, float h, int wt)
+    {
+        target = t;
+        gameobj = g;
+        speed = s;
+        height = h;
+        waitTime = wt;
+        direction = Direction.Up;
+
+        upPosn = target.transform.position;
+        upPosn.y += height;
+
+        downPosn = target.transform.position;
+        downPosn.y -= height;
+
+    }
+
+    public void Move() //called on every update
+    {
+
+        float step = speed * Time.deltaTime;
+        Vector3 newTargetPosn = new Vector3();
+
+
+        if (Vector3.Distance(target.transform.position, gameobj.transform.position) > 2) //if within target go straight to target
+        {
+            if(direction == Direction.Up)
+            {
+                newTargetPosn = upPosn;
+            }else if(direction == Direction.Down)
+            {
+                newTargetPosn = downPosn;
+            }
+        }
+        else
+        {
+            newTargetPosn = target.transform.position;
+        }
+
+        this.gameobj.transform.position = Vector3.MoveTowards(this.gameobj.transform.position, newTargetPosn, step);
+
+
+    }
+
+
+
+    
 }
