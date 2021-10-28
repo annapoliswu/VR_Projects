@@ -9,6 +9,7 @@ TagManager:
   - Grabbable
   - Target
   - Swatter
+  - Fly
   layers:
   - Default
   - TransparentFX

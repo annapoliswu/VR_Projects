@@ -56,7 +56,9 @@ public class Bug : MonoBehaviour
 
         //this.gameobj.transform.position = Vector3.MoveTowards(this.gameobj.transform.position, newTargetPosn, step);
         Vector3 v = Vector3.MoveTowards(this.transform.position, newTargetPosn, step);
-        this.GetComponent<Rigidbody>().transform.position = v;
+        Rigidbody rigidbody = this.GetComponent<Rigidbody>();
+        rigidbody.transform.position = v;
+        rigidbody.transform.LookAt(target.transform);
 
     }
 

@@ -4,17 +4,10 @@ using UnityEngine;
 
 public class BugInteraction : MonoBehaviour
 {
-    private void OnCollisionStay(Collision collision)
+    AudioManager audioManager;
+    private void Start()
     {
-        if(collision.gameObject.CompareTag("Target"))
-        {
-            print("in target");
-            Destroy(gameObject);
-
-        }else if (collision.gameObject.CompareTag("Swatter")){
-
-            Destroy(gameObject);
-        }
+        audioManager = FindObjectOfType<AudioManager>();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -25,10 +18,12 @@ public class BugInteraction : MonoBehaviour
             Destroy(gameObject);
 
         }
-        else if (other.gameObject.CompareTag("Swatter"))
+        else if (other.gameObject.CompareTag("Grabbable"))
         {
+            print("in swatter");
 
             Destroy(gameObject);
+            audioManager.Play("Slap");
         }
     }
 }

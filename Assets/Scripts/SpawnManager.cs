@@ -6,26 +6,19 @@ public class SpawnManager : MonoBehaviour
 {
     public static SpawnManager instance = null;
 
-    public float spawnRadius = 5;
     public int spawnInterval = 2;
-    public int speed = 2;
+    public float bugMaxSpeed = 4f;
+    public float bugMaxHeight = 2f;
+    public int bugMaxWaitTime = 3;
 
     public GameObject target;
     public List<GameObject> prefabs = new List<GameObject>();
     private List<GameObject> bugs = new List<GameObject>();
 
-    private float targetRadius = .5f;
 
     private void Awake()
     {
-        if (instance == null)
-        {
-            instance = this;
-        }
-        else if (instance != this)
-        {
-            Destroy(gameObject);
-        }
+       
 
     }
 
@@ -58,20 +51,13 @@ public class SpawnManager : MonoBehaviour
 
     private void SpawnObj()
     {
-        Vector3 targetPosition = target.transform.position;
-        Vector3 startPosition = new Vector3(0,0,0);
-        Vector2 rand2D = Random.insideUnitCircle * spawnRadius;
-        
-
         GameObject obj = GameObject.Instantiate(prefabs[0], this.transform.position , Quaternion.identity);
         Bug bugData = obj.AddComponent<Bug>();
 
-
         bugData.gameobj = obj;
-        bugData.speed = Random.Range(1.5f, 3f);
-        bugData.height = 5;
-        bugData.waitTime = Random.Range(1, 3);
-        //bugToAdd = new Bug(target, obj, speed, height, waitTime);
+        bugData.speed = Random.Range(1.5f, bugMaxSpeed);
+        bugData.height = Random.Range(1f, bugMaxHeight);
+        bugData.waitTime = Random.Range(1, bugMaxWaitTime);
         bugData.coroutine = StartCoroutine(OscBug(bugData));
         bugData.target = target;
 
