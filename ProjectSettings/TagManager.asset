@@ -8,7 +8,6 @@ TagManager:
   - GroundSurf
   - Grabbable
   - Target
-  - Swatter
   - Fly
   layers:
   - Default

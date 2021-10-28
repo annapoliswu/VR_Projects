@@ -5,9 +5,11 @@ using UnityEngine;
 public class BugInteraction : MonoBehaviour
 {
     AudioManager audioManager;
+    SwatGamePlayer player;
     private void Start()
     {
         audioManager = FindObjectOfType<AudioManager>();
+        player = FindObjectOfType<SwatGamePlayer>();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -15,8 +17,10 @@ public class BugInteraction : MonoBehaviour
         if (other.gameObject.CompareTag("Target"))
         {
             print("in target, trigger");
-            Destroy(gameObject);
 
+            audioManager.Play("Munch");
+            Destroy(gameObject);
+            player.subHealth();
         }
         else if (other.gameObject.CompareTag("Grabbable"))
         {
