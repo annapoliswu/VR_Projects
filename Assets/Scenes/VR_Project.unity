@@ -776,7 +776,7 @@ Transform:
   m_GameObject: {fileID: 685803911}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 6.44, y: 2.6, z: -4.89}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.92, y: 0.92, z: 0.92}
   m_Children:
   - {fileID: 1734271738}
   m_Father: {fileID: 0}
@@ -1107,7 +1107,7 @@ Transform:
   m_GameObject: {fileID: 868355369}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -6.82, y: 2.29, z: -7.54}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.92, y: 0.92, z: 0.92}
   m_Children:
   - {fileID: 2080902909}
   m_Father: {fileID: 0}
@@ -1380,6 +1380,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 100004, guid: ce816f2e6abb0504092c23ed9b970dfd, type: 3}
+      propertyPath: m_TagString
+      value: MainCamera
+      objectReference: {fileID: 0}
     - target: {fileID: 100008, guid: ce816f2e6abb0504092c23ed9b970dfd, type: 3}
       propertyPath: m_Name
       value: OVRPlayerController
@@ -1893,8 +1897,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1913608724}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.48787093, y: 1.362, z: 3.663}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -0.48787093, y: 1.244, z: 3.304}
+  m_LocalScale: {x: 0.92, y: 0.92, z: 0.92}
   m_Children:
   - {fileID: 122821335}
   m_Father: {fileID: 0}
@@ -4769,7 +4773,7 @@ Transform:
   m_GameObject: {fileID: 2112537299832712922}
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0.25615692, y: 0, z: -1.2000036}
-  m_LocalScale: {x: 2.5, y: 2.5, z: 2.5}
+  m_LocalScale: {x: 2.3, y: 2.3, z: 2.3}
   m_Children:
   - {fileID: 5587687609410689493}
   - {fileID: 4954406886899504246}
@@ -12130,6 +12134,18 @@ PrefabInstance:
     - target: {fileID: 6871814065331928414, guid: 865eb6d7bc76052468afba52d400e1f9, type: 3}
       propertyPath: m_RootOrder
       value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 6871814065331928414, guid: 865eb6d7bc76052468afba52d400e1f9, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 60.765
+      objectReference: {fileID: 0}
+    - target: {fileID: 6871814065331928414, guid: 865eb6d7bc76052468afba52d400e1f9, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 60.765007
+      objectReference: {fileID: 0}
+    - target: {fileID: 6871814065331928414, guid: 865eb6d7bc76052468afba52d400e1f9, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 60.765022
       objectReference: {fileID: 0}
     - target: {fileID: 6871814065331928414, guid: 865eb6d7bc76052468afba52d400e1f9, type: 3}
       propertyPath: m_LocalPosition.x
