@@ -63,7 +63,7 @@ public class ControllerGrabber : MonoBehaviour
 
     public void OnTriggerExit(Collider other)
     {
-        if (_intersectingObject)
+        if (_intersectingObject && other.gameObject.CompareTag("Grabbable"))
         {
             other.gameObject.GetComponent<Renderer>().material = _savedMaterial;
             _intersectingObject = false;
