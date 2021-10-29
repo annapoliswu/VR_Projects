@@ -13,7 +13,8 @@ public class SwatGamePlayer : MonoBehaviour
     void Start()
     {
         health = maxHealth;
-        healthText = FindObjectOfType<Text>();
+        GameObject gameObj = GameObject.FindGameObjectWithTag("Health");
+        healthText = gameObj.GetComponent<Text>();
         healthText.text = "Health: " + health;
     }
 

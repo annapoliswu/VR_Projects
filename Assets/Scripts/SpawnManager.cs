@@ -6,6 +6,7 @@ public class SpawnManager : MonoBehaviour
 {
     public static SpawnManager instance = null;
 
+    public int spawnDelay = 0;
     public int spawnInterval = 2;
     public float bugMaxSpeed = 4f;
     public float bugMaxHeight = 2f;
@@ -26,7 +27,7 @@ public class SpawnManager : MonoBehaviour
         // Start is called before the first frame update
     void Start()
     {
-        InvokeRepeating ("SpawnObj", 0, spawnInterval);
+        InvokeRepeating ("SpawnObj", spawnDelay, spawnInterval);
     }
 
     // Update is called once per frame

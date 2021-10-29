@@ -35,7 +35,7 @@ public class ControllerGrabber : MonoBehaviour
 
     public void OnTriggerEnter(Collider other)
     {
-        if (!_intersectingObject)
+        if (!_intersectingObject && other.gameObject.CompareTag("Grabbable"))
         {
             _savedMaterial = other.gameObject.GetComponent<Renderer>().material;
             other.gameObject.GetComponent<Renderer>().material = canGrabMaterial;

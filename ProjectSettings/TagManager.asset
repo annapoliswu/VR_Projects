@@ -9,6 +9,7 @@ TagManager:
   - Grabbable
   - Target
   - Fly
+  - Health
   layers:
   - Default
   - TransparentFX
